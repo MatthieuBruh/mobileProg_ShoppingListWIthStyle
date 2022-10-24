@@ -1,1 +1,0 @@
-https://expo.dev/@matthieu_bruh/Assignment12_ShoppingListFirebase?serviceType=classic&distribution=expo-go

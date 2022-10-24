@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, TextInput, View, FlatList, Button, Alert } from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList, Alert, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from'firebase/app';
 import { getDatabase, push, ref, onValue, remove } from'firebase/database';
+import { Header, Button, Icon, Input, ListItem } from'react-native-elements';
 
 export default function App() {
   const firebaseConfig = {
@@ -56,17 +57,20 @@ export default function App() {
   }, []);
 
   return (
+    
     <View style={styles.container}>
 
-      <TextInput
-        style={styles.textInputStyle}
+    <Header centerComponent={{ text: 'SHOPPING LIST', style: { color: '#fff' } }} />
+
+      <Input
+        label='Product'
         placeholder='Product'
         onChangeText={value => setProduct(value)}
         value={product}
       />
 
-      <TextInput
-        style={styles.textInputStyle}
+      <Input
+        label="Amount"
         placeholder='Amount'
         onChangeText={value => setAmount(value)}
         value={amount}
@@ -74,27 +78,38 @@ export default function App() {
 
       <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', width: '75%' }}>
         <Button
-            style={styles.buttonStyle}
             title="Save"
             onPress={saveItem}
+            icon={{
+              name: 'save',
+              color: 'white'
+            }}
+            containerStyle={{
+              width: '75%'
+            }}
         />
       </View>
-      
 
-      <View style={{ flexDirection: "column", justifyContent: 'center', alignItems: 'center', width: '100%', margin: 20 }}>
-        <Text style= {{ color: 'blue', fontSize: 16, fontWeight: 'bold' }} >Shopping List</Text>
-        <FlatList
-            data={shoppingList}
-            renderItem={({item}) =>
-              <View style={styles.listContainer}>
-                <Text>{item.product}, {item.amount}</Text>
-                <Text style={{color: '#0000ff'}} onPress={() => itemBought(item.key)}> Delete</Text>
-              </View>
-            }
-            keyExtractor={(item, index) => index.toString()}
-        />
-      </View>
-      
+      <FlatList style={styles.flatList}
+        data={shoppingList}
+        renderItem={({ item }) => (
+          <ListItem bottomDivider>
+            <ListItem.Content>
+              <ListItem.Title>{item.product}</ListItem.Title>
+              <ListItem.Subtitle>{item.amount}</ListItem.Subtitle>
+            </ListItem.Content>
+            <Button
+              type='clear'
+              onPress={() => itemBought(item.key)}
+              icon={{
+                name: 'delete',
+                color: 'red'
+              }}
+              />
+          </ListItem>
+        )}
+      />
+
       <StatusBar style="auto" />
     </View>
   );
@@ -105,25 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    marginTop: 50,
   },
-  buttonStyle: {
-    width: 10,
-    height: 10,
-    margin: 20,
-    alignContent: 'center',
-  },
-  textInputStyle: {
-    width: 250,
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    margin:10
-  },
-  listContainer: {
-    flexDirection: "row",
-    justifyContent: 'center',
-    alignItems: 'center',
+  flatList: {
     width: '100%',
   },
 });
